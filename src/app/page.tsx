@@ -10,10 +10,16 @@ export default function Home() {
   const [message, setMessage] = useState<string>();
 
   useEffect(() => {
-   const newRpcClient = new TruckerLocationGrpcServiceClient("http://localhost:8080", null, null);
+    if (!process.env.NEXT_PUBLIC_GRPC_URL) {
+      console.error("NEXT_PUBLIC_GRPC_URL is not defined");
+      return;
+    }
+   const newRpcClient = new TruckerLocationGrpcServiceClient(process.env.NEXT_PUBLIC_GRPC_URL, null, null);
    setRpcClient(newRpcClient);
 
    const newRpcRequest = new TruckerLocationRequest();
+    newRpcRequest.setOrderId(123);
+    newRpcRequest.setManagerId(123145);
     const temp = newRpcRequest.getOrderId();
     console.log(temp)
    setRpcRequest(newRpcRequest);
