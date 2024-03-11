@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "npm run protoc:compile && next start",
+    "lint": "next lint",
+    "protoc:compile": "protoc -I=. grpc/helloworld.proto --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcwebtext:."
   },
   "dependencies": {
     "react": "^18",
