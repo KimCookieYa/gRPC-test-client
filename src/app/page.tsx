@@ -1,12 +1,14 @@
 "use client";
 
+import * as grpcWeb from 'grpc-web';
 import {useEffect, useState} from "react";
-import {TruckerLocationGrpcServiceClient} from "../../grpc/HelloworldServiceClientPb";
-import {TruckerLocationRequest} from "../../grpc/helloworld_pb";
+import {EchoServiceClient} from "../../grpc/helloworld_grpc_web_pb";
+import {EchoRequest, EchoResponse} from "../../grpc/helloworld_pb";
+
 
 export default function Home() {
-  const [rpcClient, setRpcClient] = useState<TruckerLocationGrpcServiceClient>();
-  const [rpcRequest, setRpcRequest] = useState<TruckerLocationRequest>();
+  const [rpcClient, setRpcClient] = useState<EchoServiceClient>();
+  const [rpcRequest, setRpcRequest] = useState<EchoRequest>();
   const [message, setMessage] = useState<string>();
 
   useEffect(() => {
@@ -14,14 +16,12 @@ export default function Home() {
       console.error("NEXT_PUBLIC_GRPC_URL is not defined");
       return;
     }
-   const newRpcClient = new TruckerLocationGrpcServiceClient(process.env.NEXT_PUBLIC_GRPC_URL, null, null);
+   const newRpcClient = new EchoServiceClient(process.env.NEXT_PUBLIC_GRPC_URL, null, null);
    setRpcClient(newRpcClient);
 
-   const newRpcRequest = new TruckerLocationRequest();
-    newRpcRequest.setOrderId(123);
-    newRpcRequest.setManagerId(123145);
-    const temp = newRpcRequest.getOrderId();
-    console.log(temp)
+   const newRpcRequest = new EchoRequest();
+    newRpcRequest.setMessage('asdfasdfasdf')
+
    setRpcRequest(newRpcRequest);
   }, []);
 
@@ -30,8 +30,27 @@ export default function Home() {
       return;
     }
 
-    const response = await rpcClient.getTruckerLocations(rpcRequest);
-    console.log(response);
+    const call = rpcClient.echo(
+        rpcRequest, {}
+        ,
+        (err: grpcWeb.RpcError, response: EchoResponse) => {
+          if (err) {
+            if (err.code !== grpcWeb.StatusCode.OK) {
+              console.error(
+                  'Error code: ' + err.code + ' "' + err.message + '"');
+            }
+          } else {
+            console.error(
+                'Error code');
+          }
+
+        });
+    call.on('status', (status: grpcWeb.Status) => {
+      if (status.metadata) {
+        console.log('Received metadata');
+        console.log(status.metadata);
+      }
+    });
   }
 
 

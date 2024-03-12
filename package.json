@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "npm run protoc:compile && next start",
     "lint": "next lint",
-    "protoc:compile": "protoc -I=. grpc/helloworld.proto --js_out=import_style=commonjs:. --grpc-web_out=import_style=typescript,mode=grpcwebtext:."
+    "protoc:compile": "protoc -I=. grpc/helloworld.proto --js_out=import_style=commonjs:. --grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:."
   },
   "dependencies": {
     "axios": "^1.6.7",
