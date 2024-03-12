@@ -2,12 +2,14 @@
 
 import * as grpcWeb from 'grpc-web';
 import {useEffect, useState} from "react";
-import {EchoServiceClient} from "../../grpc/helloworld_grpc_web_pb";
-import {EchoRequest, EchoResponse} from "../../grpc/helloworld_pb";
+import {TruckerLocationGrpcServiceClient} from "../../grpc/helloworld_grpc_web_pb";
+import {TruckerLocationReply, TruckerLocationRequest} from "../../grpc/helloworld_pb";
+import * as grpc from "grpc";
+
 
 
 export default function Home() {
-  const [rpcClient, setRpcClient] = useState<EchoServiceClient>();
+  const [rpcClient, setRpcClient] = useState<TruckerLocationGrpcServiceClient>();
   const [message, setMessage] = useState<string>();
 
   useEffect(() => {
@@ -15,7 +17,7 @@ export default function Home() {
       console.error("NEXT_PUBLIC_GRPC_URL is not defined");
       return;
     }
-   const newRpcClient = new EchoServiceClient(process.env.NEXT_PUBLIC_GRPC_URL, null, null);
+   const newRpcClient = new TruckerLocationGrpcServiceClient(process.env.NEXT_PUBLIC_GRPC_URL, null, null);
    setRpcClient(newRpcClient);
 
   }, []);
@@ -24,27 +26,31 @@ export default function Home() {
     if (!rpcClient) {
       return;
     }
-    const newRpcRequest = new EchoRequest();
-    newRpcRequest.setMessage("Hello, World!fasdfasdf");
+    const newRpcRequest = new TruckerLocationRequest();
+    newRpcRequest.setOrderId(1);
+    newRpcRequest.setManagerId(2);
 
-    const call = rpcClient.echo(
-        newRpcRequest, {}
-        ,
-        (err: grpcWeb.RpcError, response: EchoResponse) => {
-          if (err) {
-            if (err.code !== grpcWeb.StatusCode.OK) {
-              console.error(
-                  'Error code: ' + err.code + ' "' + err.message + '"');
-            }
-          }
-          console.log('Received response: ' + response.getMessage());
-
-        });
+    const call = rpcClient.getTruckerLocations(
+        newRpcRequest, {} as grpcWeb.Metadata);
     call.on('status', (status: grpcWeb.Status) => {
       if (status.metadata) {
         console.log('Received metadata');
-        console.log(status.metadata);
+        console.log(status);
+
       }
+    });
+    call.on('data', (message: TruckerLocationReply) => {
+        console.log('Received message');
+        console.log(message.toObject());
+        setMessage(JSON.stringify(message.toObject()));
+    });
+    call.on('end', function() {
+      // The server has finished sending
+        console.log('Received end');
+    });
+    call.on('error', function(e) {
+      // An error has occurred and the stream has been closed.
+        console.log(e);
     });
     console.log(call)
   }

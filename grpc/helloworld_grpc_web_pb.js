@@ -1,5 +1,5 @@
 /**
- * @fileoverview gRPC-Web generated client stub for ai.sendy.victor.grpc.echo
+ * @fileoverview gRPC-Web generated client stub for ai.sendy.victor.grpc.truckerlocation
  * @enhanceable
  * @public
  */
@@ -24,7 +24,7 @@ proto.ai = {};
 proto.ai.sendy = {};
 proto.ai.sendy.victor = {};
 proto.ai.sendy.victor.grpc = {};
-proto.ai.sendy.victor.grpc.echo = require('./helloworld_pb.js');
+proto.ai.sendy.victor.grpc.truckerlocation = require('./helloworld_pb.js');
 
 /**
  * @param {string} hostname
@@ -34,7 +34,7 @@ proto.ai.sendy.victor.grpc.echo = require('./helloworld_pb.js');
  * @struct
  * @final
  */
-proto.ai.sendy.victor.grpc.echo.EchoServiceClient =
+proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationGrpcServiceClient =
     function(hostname, credentials, options) {
   if (!options) options = {};
   options.format = 'text';
@@ -60,7 +60,7 @@ proto.ai.sendy.victor.grpc.echo.EchoServiceClient =
  * @struct
  * @final
  */
-proto.ai.sendy.victor.grpc.echo.EchoServicePromiseClient =
+proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationGrpcServicePromiseClient =
     function(hostname, credentials, options) {
   if (!options) options = {};
   options.format = 'text';
@@ -81,63 +81,58 @@ proto.ai.sendy.victor.grpc.echo.EchoServicePromiseClient =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.ai.sendy.victor.grpc.echo.EchoRequest,
- *   !proto.ai.sendy.victor.grpc.echo.EchoResponse>}
+ *   !proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationRequest,
+ *   !proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationReply>}
  */
-const methodDescriptor_EchoService_Echo = new grpc.web.MethodDescriptor(
-  '/ai.sendy.victor.grpc.echo.EchoService/Echo',
-  grpc.web.MethodType.UNARY,
-  proto.ai.sendy.victor.grpc.echo.EchoRequest,
-  proto.ai.sendy.victor.grpc.echo.EchoResponse,
+const methodDescriptor_TruckerLocationGrpcService_GetTruckerLocations = new grpc.web.MethodDescriptor(
+  '/ai.sendy.victor.grpc.truckerlocation.TruckerLocationGrpcService/GetTruckerLocations',
+  grpc.web.MethodType.SERVER_STREAMING,
+  proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationRequest,
+  proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationReply,
   /**
-   * @param {!proto.ai.sendy.victor.grpc.echo.EchoRequest} request
+   * @param {!proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  proto.ai.sendy.victor.grpc.echo.EchoResponse.deserializeBinary
+  proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationReply.deserializeBinary
 );
 
 
 /**
- * @param {!proto.ai.sendy.victor.grpc.echo.EchoRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
+ * @param {!proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationRequest} request The request proto
+ * @param {?Object<string, string>=} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.RpcError, ?proto.ai.sendy.victor.grpc.echo.EchoResponse)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.ai.sendy.victor.grpc.echo.EchoResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationReply>}
  *     The XHR Node Readable Stream
  */
-proto.ai.sendy.victor.grpc.echo.EchoServiceClient.prototype.echo =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
-      '/ai.sendy.victor.grpc.echo.EchoService/Echo',
+proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationGrpcServiceClient.prototype.getTruckerLocations =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/ai.sendy.victor.grpc.truckerlocation.TruckerLocationGrpcService/GetTruckerLocations',
       request,
       metadata || {},
-      methodDescriptor_EchoService_Echo,
-      callback);
+      methodDescriptor_TruckerLocationGrpcService_GetTruckerLocations);
 };
 
 
 /**
- * @param {!proto.ai.sendy.victor.grpc.echo.EchoRequest} request The
- *     request proto
+ * @param {!proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationRequest} request The request proto
  * @param {?Object<string, string>=} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.ai.sendy.victor.grpc.echo.EchoResponse>}
- *     Promise that resolves to the response
+ * @return {!grpc.web.ClientReadableStream<!proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationReply>}
+ *     The XHR Node Readable Stream
  */
-proto.ai.sendy.victor.grpc.echo.EchoServicePromiseClient.prototype.echo =
+proto.ai.sendy.victor.grpc.truckerlocation.TruckerLocationGrpcServicePromiseClient.prototype.getTruckerLocations =
     function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
-      '/ai.sendy.victor.grpc.echo.EchoService/Echo',
+  return this.client_.serverStreaming(this.hostname_ +
+      '/ai.sendy.victor.grpc.truckerlocation.TruckerLocationGrpcService/GetTruckerLocations',
       request,
       metadata || {},
-      methodDescriptor_EchoService_Echo);
+      methodDescriptor_TruckerLocationGrpcService_GetTruckerLocations);
 };
 
 
-module.exports = proto.ai.sendy.victor.grpc.echo;
+module.exports = proto.ai.sendy.victor.grpc.truckerlocation;
 

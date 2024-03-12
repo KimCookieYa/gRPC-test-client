@@ -3,29 +3,27 @@ import * as grpcWeb from 'grpc-web';
 import * as grpc_helloworld_pb from '../grpc/helloworld_pb';
 
 
-export class EchoServiceClient {
+export class TruckerLocationGrpcServiceClient {
   constructor (hostname: string,
                credentials?: null | { [index: string]: string; },
                options?: null | { [index: string]: any; });
 
-  echo(
-    request: grpc_helloworld_pb.EchoRequest,
-    metadata: grpcWeb.Metadata | undefined,
-    callback: (err: grpcWeb.RpcError,
-               response: grpc_helloworld_pb.EchoResponse) => void
-  ): grpcWeb.ClientReadableStream<grpc_helloworld_pb.EchoResponse>;
+  getTruckerLocations(
+    request: grpc_helloworld_pb.TruckerLocationRequest,
+    metadata?: grpcWeb.Metadata
+  ): grpcWeb.ClientReadableStream<grpc_helloworld_pb.TruckerLocationReply>;
 
 }
 
-export class EchoServicePromiseClient {
+export class TruckerLocationGrpcServicePromiseClient {
   constructor (hostname: string,
                credentials?: null | { [index: string]: string; },
                options?: null | { [index: string]: any; });
 
-  echo(
-    request: grpc_helloworld_pb.EchoRequest,
+  getTruckerLocations(
+    request: grpc_helloworld_pb.TruckerLocationRequest,
     metadata?: grpcWeb.Metadata
-  ): Promise<grpc_helloworld_pb.EchoResponse>;
+  ): grpcWeb.ClientReadableStream<grpc_helloworld_pb.TruckerLocationReply>;
 
 }
 
