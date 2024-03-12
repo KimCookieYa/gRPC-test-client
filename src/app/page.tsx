@@ -8,7 +8,6 @@ import {EchoRequest, EchoResponse} from "../../grpc/helloworld_pb";
 
 export default function Home() {
   const [rpcClient, setRpcClient] = useState<EchoServiceClient>();
-  const [rpcRequest, setRpcRequest] = useState<EchoRequest>();
   const [message, setMessage] = useState<string>();
 
   useEffect(() => {
@@ -19,19 +18,17 @@ export default function Home() {
    const newRpcClient = new EchoServiceClient(process.env.NEXT_PUBLIC_GRPC_URL, null, null);
    setRpcClient(newRpcClient);
 
-   const newRpcRequest = new EchoRequest();
-    newRpcRequest.setMessage('asdfasdfasdf')
-
-   setRpcRequest(newRpcRequest);
   }, []);
 
   const onButtonClick = async () => {
-    if (!rpcClient || !rpcRequest) {
+    if (!rpcClient) {
       return;
     }
+    const newRpcRequest = new EchoRequest();
+    newRpcRequest.setMessage("Hello, World!fasdfasdf");
 
     const call = rpcClient.echo(
-        rpcRequest, {}
+        newRpcRequest, {}
         ,
         (err: grpcWeb.RpcError, response: EchoResponse) => {
           if (err) {
@@ -39,10 +36,8 @@ export default function Home() {
               console.error(
                   'Error code: ' + err.code + ' "' + err.message + '"');
             }
-          } else {
-            console.error(
-                'Error code');
           }
+          console.log('Received response: ' + response.getMessage());
 
         });
     call.on('status', (status: grpcWeb.Status) => {
@@ -51,6 +46,7 @@ export default function Home() {
         console.log(status.metadata);
       }
     });
+    console.log(call)
   }
 
 
