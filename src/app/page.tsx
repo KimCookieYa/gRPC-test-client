@@ -2,14 +2,11 @@
 
 import * as grpcWeb from 'grpc-web';
 import {useEffect, useState} from "react";
-import {TruckerLocationGrpcServiceClient} from "../../grpc/helloworld_grpc_web_pb";
+import {TruckerLocationServiceClient} from "../../grpc/helloworld_grpc_web_pb";
 import {TruckerLocationReply, TruckerLocationRequest} from "../../grpc/helloworld_pb";
-import * as grpc from "grpc";
-
-
 
 export default function Home() {
-  const [rpcClient, setRpcClient] = useState<TruckerLocationGrpcServiceClient>();
+  const [rpcClient, setRpcClient] = useState<TruckerLocationServiceClient>();
   const [message, setMessage] = useState<string>();
 
   useEffect(() => {
@@ -17,7 +14,7 @@ export default function Home() {
       console.error("NEXT_PUBLIC_GRPC_URL is not defined");
       return;
     }
-   const newRpcClient = new TruckerLocationGrpcServiceClient(process.env.NEXT_PUBLIC_GRPC_URL, null, null);
+   const newRpcClient = new TruckerLocationServiceClient(process.env.NEXT_PUBLIC_GRPC_URL, null, null);
    setRpcClient(newRpcClient);
 
   }, []);

@@ -6,7 +6,7 @@ option java_multiple_files = true;
 option java_package = "truckerlocation";
 option java_outer_classname = "TruckerLocationProto";
 
-service TruckerLocationGrpcService {
+service TruckerLocationService {
   rpc GetTruckerLocations (TruckerLocationRequest) returns (stream TruckerLocationReply);
 }
 
