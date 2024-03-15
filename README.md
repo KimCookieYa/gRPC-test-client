@@ -1,6 +1,13 @@
 # gRPC 테스트 클라이언트
 
-# Get Start
+# Get Started
+
+```bash
+$ npm install
+$ npm run dev
+```
+
+# Proto 파일 컴파일
 
 following [grpc/grpc-web](https://github.com/grpc/grpc-web/?tab=readme-ov-file#quick-start) docs
 
