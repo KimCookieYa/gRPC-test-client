@@ -24,13 +24,12 @@ export default function Home() {
       return;
     }
     const newRpcRequest = new TruckerLocationRequest();
-    newRpcRequest.setOrderId(1);
+    newRpcRequest.setOrderId(Number(process.env.NEXT_PUBLIC_ORDER_ID) || 1);
     newRpcRequest.setManagerId(2);
 
     const call = rpcClient.getTruckerLocations(
         newRpcRequest, {
-            'custom-header-1': 'value1',
-            'custom-header-2': 'value2'
+            'Authorization': process.env.NEXT_PUBLIC_AUTHORIZATION
         } as grpcWeb.Metadata);
     call.on('status', (status: grpcWeb.Status) => {
       if (status.metadata) {

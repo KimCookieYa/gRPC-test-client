@@ -1,6 +1,6 @@
 import * as grpcWeb from 'grpc-web';
 
-import * as grpc_helloworld_pb from '../grpc/helloworld_pb';
+import * as grpc_helloworld_pb from '../grpc/helloworld_pb'; // proto import: "grpc/helloworld.proto"
 
 
 export class TruckerLocationServiceClient {
