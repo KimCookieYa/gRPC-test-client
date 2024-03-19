@@ -28,7 +28,10 @@ export default function Home() {
     newRpcRequest.setManagerId(2);
 
     const call = rpcClient.getTruckerLocations(
-        newRpcRequest, {} as grpcWeb.Metadata);
+        newRpcRequest, {
+            'custom-header-1': 'value1',
+            'custom-header-2': 'value2'
+        } as grpcWeb.Metadata);
     call.on('status', (status: grpcWeb.Status) => {
       if (status.metadata) {
         console.log('Received metadata');
