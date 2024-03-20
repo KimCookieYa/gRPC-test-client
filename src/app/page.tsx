@@ -23,6 +23,7 @@ export default function Home() {
     if (!rpcClient) {
       return;
     }
+
     const newRpcRequest = new TruckerLocationRequest();
     newRpcRequest.setOrderId(Number(process.env.NEXT_PUBLIC_ORDER_ID) || 1);
     newRpcRequest.setManagerId(2);
@@ -30,13 +31,15 @@ export default function Home() {
     const call = rpcClient.getTruckerLocations(
         newRpcRequest, {
             'Authorization': process.env.NEXT_PUBLIC_AUTHORIZATION
-        } as grpcWeb.Metadata);
+        } as grpcWeb.Metadata
+    );
     call.on('status', (status: grpcWeb.Status) => {
       if (status.metadata) {
         console.log('Received metadata');
         console.log(status);
-
       }
+      console.log(`Received status: ${status.code} - ${status.details}`);
+      console.log(status)
     });
     call.on('data', (message: TruckerLocationReply) => {
         console.log('Received message');
@@ -49,12 +52,10 @@ export default function Home() {
     });
     call.on('error', function(e) {
       // An error has occurred and the stream has been closed.
-        console.log(e);
+        console.error(e);
     });
-    console.log(call)
+
   }
-
-
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
