@@ -51,9 +51,9 @@ call.on('status', (status: grpcWeb.Status) => {
     }
             console.log(`Received status: ${status.code} - ${status.details}`);
             console.log(status);
-        });
-        call.on('data', (message: TruckerLocationReply) => {
-            console.log('Received message');
+});
+call.on('data', (message: TruckerLocationReply) => {
+    console.log('Received message');
             console.log(message.toObject());
             setMessage1(JSON.stringify(message.toObject()));
         });
@@ -69,14 +69,14 @@ call.on('status', (status: grpcWeb.Status) => {
     };
 
     const getOrderManage = async (e: FormEvent) => {
-        e.preventDefault();
-        if (!rpcClient) {
-            return;
-        }
+                    e.preventDefault();
+                    if (!rpcClient) {
+                        return;
+                    }
 
-        if (stream) {
-            stream.cancel();
-        }
+                    if (stream) {
+                        stream.cancel();
+                    }
 
         try {
             const res = await axios.get('https://spring2024be.sendy.ngrok.io/generate/token', {
