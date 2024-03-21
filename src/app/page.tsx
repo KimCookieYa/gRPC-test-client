@@ -9,7 +9,7 @@ import axios from "axios";
 export default function Home() {
     const [rpcClient, setRpcClient] = useState<TruckerLocationServiceClient>();
     const [message, setMessage] = useState<string>();
-    const [orderId, setOrderId] = useState<number>(Number(process.env.NEXT_PUBLIC_ORDER_ID) || 1)
+    const [orderId, setOrderId] = useState<number>(0)
     const [jwtToken, setJwtToken] = useState<string>();
 
     useEffect(() => {
