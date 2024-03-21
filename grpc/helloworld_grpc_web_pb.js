@@ -133,5 +133,61 @@ proto.ai.sendy.grpc.truckerlocation.TruckerLocationServicePromiseClient.prototyp
 };
 
 
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest,
+ *   !proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply>}
+ */
+const methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea = new grpc.web.MethodDescriptor(
+  '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocationsInArea',
+  grpc.web.MethodType.SERVER_STREAMING,
+  proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest,
+  proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply,
+  /**
+   * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest} request The request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply>}
+ *     The XHR Node Readable Stream
+ */
+proto.ai.sendy.grpc.truckerlocation.TruckerLocationServiceClient.prototype.getTruckerLocationsInArea =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocationsInArea',
+      request,
+      metadata || {},
+      methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea);
+};
+
+
+/**
+ * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest} request The request proto
+ * @param {?Object<string, string>=} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply>}
+ *     The XHR Node Readable Stream
+ */
+proto.ai.sendy.grpc.truckerlocation.TruckerLocationServicePromiseClient.prototype.getTruckerLocationsInArea =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocationsInArea',
+      request,
+      metadata || {},
+      methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea);
+};
+
+
 module.exports = proto.ai.sendy.grpc.truckerlocation;
 

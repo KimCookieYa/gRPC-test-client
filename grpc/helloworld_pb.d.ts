@@ -48,6 +48,64 @@ export namespace TruckerLocationReply {
   }
 }
 
+export class TruckerLocationInAreaRequest extends jspb.Message {
+  getLeftTop(): Point | undefined;
+  setLeftTop(value?: Point): TruckerLocationInAreaRequest;
+  hasLeftTop(): boolean;
+  clearLeftTop(): TruckerLocationInAreaRequest;
+
+  getRightBottom(): Point | undefined;
+  setRightBottom(value?: Point): TruckerLocationInAreaRequest;
+  hasRightBottom(): boolean;
+  clearRightBottom(): TruckerLocationInAreaRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TruckerLocationInAreaRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: TruckerLocationInAreaRequest): TruckerLocationInAreaRequest.AsObject;
+  static serializeBinaryToWriter(message: TruckerLocationInAreaRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TruckerLocationInAreaRequest;
+  static deserializeBinaryFromReader(message: TruckerLocationInAreaRequest, reader: jspb.BinaryReader): TruckerLocationInAreaRequest;
+}
+
+export namespace TruckerLocationInAreaRequest {
+  export type AsObject = {
+    leftTop?: Point.AsObject,
+    rightBottom?: Point.AsObject,
+  }
+}
+
+export class TruckerLocationInAreaReply extends jspb.Message {
+  getTruckerId(): number;
+  setTruckerId(value: number): TruckerLocationInAreaReply;
+
+  getOwnerName(): string;
+  setOwnerName(value: string): TruckerLocationInAreaReply;
+
+  getBizName(): string;
+  setBizName(value: string): TruckerLocationInAreaReply;
+
+  getPoint(): Point | undefined;
+  setPoint(value?: Point): TruckerLocationInAreaReply;
+  hasPoint(): boolean;
+  clearPoint(): TruckerLocationInAreaReply;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TruckerLocationInAreaReply.AsObject;
+  static toObject(includeInstance: boolean, msg: TruckerLocationInAreaReply): TruckerLocationInAreaReply.AsObject;
+  static serializeBinaryToWriter(message: TruckerLocationInAreaReply, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TruckerLocationInAreaReply;
+  static deserializeBinaryFromReader(message: TruckerLocationInAreaReply, reader: jspb.BinaryReader): TruckerLocationInAreaReply;
+}
+
+export namespace TruckerLocationInAreaReply {
+  export type AsObject = {
+    truckerId: number,
+    ownerName: string,
+    bizName: string,
+    point?: Point.AsObject,
+  }
+}
+
 export class Point extends jspb.Message {
   getLatitude(): number;
   setLatitude(value: number): Point;

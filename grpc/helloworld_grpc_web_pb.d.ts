@@ -13,6 +13,11 @@ export class TruckerLocationServiceClient {
     metadata?: grpcWeb.Metadata
   ): grpcWeb.ClientReadableStream<grpc_helloworld_pb.TruckerLocationReply>;
 
+  getTruckerLocationsInArea(
+    request: grpc_helloworld_pb.TruckerLocationInAreaRequest,
+    metadata?: grpcWeb.Metadata
+  ): grpcWeb.ClientReadableStream<grpc_helloworld_pb.TruckerLocationInAreaReply>;
+
 }
 
 export class TruckerLocationServicePromiseClient {
@@ -24,6 +29,11 @@ export class TruckerLocationServicePromiseClient {
     request: grpc_helloworld_pb.TruckerLocationRequest,
     metadata?: grpcWeb.Metadata
   ): grpcWeb.ClientReadableStream<grpc_helloworld_pb.TruckerLocationReply>;
+
+  getTruckerLocationsInArea(
+    request: grpc_helloworld_pb.TruckerLocationInAreaRequest,
+    metadata?: grpcWeb.Metadata
+  ): grpcWeb.ClientReadableStream<grpc_helloworld_pb.TruckerLocationInAreaReply>;
 
 }
 

@@ -8,6 +8,7 @@ option java_outer_classname = "TruckerLocationProto";
 
 service TruckerLocationService {
   rpc GetTruckerLocations (TruckerLocationRequest) returns (stream TruckerLocationReply);
+  rpc GetTruckerLocationsInArea (TruckerLocationInAreaRequest) returns (stream TruckerLocationInAreaReply);
 }
 
 message TruckerLocationRequest {
@@ -20,25 +21,19 @@ message TruckerLocationReply {
   Point point = 2;
 }
 
+message TruckerLocationInAreaRequest {
+  Point left_top = 1;
+  Point right_bottom = 2;
+}
+
+message TruckerLocationInAreaReply {
+  int64 trucker_id = 1;
+  string owner_name = 2;
+  string biz_name = 3;
+  Point point = 4;
+}
+
 message Point {
   double latitude = 1;
   double longitude = 2;
 }
-
-//package ai.sendy.victor.grpc.echo;
-//
-//option java_multiple_files = true;
-//option java_package = "echo";
-//option java_outer_classname = "EchoProto";
-//
-//message EchoRequest {
-//  string message = 1;
-//}
-//
-//message EchoResponse {
-//  string message = 1;
-//}
-//
-//service EchoService {
-//  rpc Echo(EchoRequest) returns (EchoResponse);
-//}
