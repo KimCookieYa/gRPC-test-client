@@ -126,7 +126,7 @@ export default function Home() {
             // An error has occurred and the stream has been closed.
             console.error(e);
         });
-        setStream(call);
+             setStream(call);
     };
 
     const onCancleStream = () => {
