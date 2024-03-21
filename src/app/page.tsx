@@ -7,7 +7,7 @@ import {
     Point,
     TruckerLocationInAreaRequest,
     TruckerLocationReply,
-    TruckerLocationRequest
+    TruckerLocationRequest,
 } from '../../grpc/helloworld_pb';
 import axios from 'axios';
 
@@ -17,17 +17,21 @@ export default function Home() {
     const [message2, setMessage2] = useState<string>();
     const [orderId, setOrderId] = useState<number>(0);
     const [jwtToken, setJwtToken] = useState<string>();
-    const [stream, setStream] = useState<grpcWeb.ClientReadableStream<TruckerLocationReply>>();
+    const [stream, setStream] =
+        useState<grpcWeb.ClientReadableStream<TruckerLocationReply>>();
 
     useEffect(() => {
         if (!process.env.NEXT_PUBLIC_GRPC_URL) {
             console.error('NEXT_PUBLIC_GRPC_URL is not defined');
             return;
         }
-        const newRpcClient = new TruckerLocationServiceClient(process.env.NEXT_PUBLIC_GRPC_URL, null, null);
+        const newRpcClient = new TruckerLocationServiceClient(
+            process.env.NEXT_PUBLIC_GRPC_URL,
+            null,
+            null
+        );
         setRpcClient(newRpcClient);
     }, []);
-
 
     const getDriverManage = async (e: FormEvent) => {
         e.preventDefault();
@@ -39,29 +43,33 @@ export default function Home() {
             stream.cancel();
         }
 
-                    const newRpcRequest = new TruckerLocationInAreaRequest();
-                    newRpcRequest.setLeftTop(new Point().setLatitude(37.5).setLongitude(127.0));
-                    newRpcRequest.setRightBottom(new Point().setLatitude(37.4).setLongitude(127.1));
+        const newRpcRequest = new TruckerLocationInAreaRequest();
+        newRpcRequest.setLeftTop(
+            new Point().setLatitude(37.5).setLongitude(127.0)
+        );
+        newRpcRequest.setRightBottom(
+            new Point().setLatitude(37.4).setLongitude(127.1)
+        );
 
         const call = rpcClient.getTruckerLocationsInArea(newRpcRequest);
-call.on('status', (status: grpcWeb.Status) => {
-    if (status.metadata) {
-        console.log('Received metadata');
-        console.log(status);
-    }
+        call.on('status', (status: grpcWeb.Status) => {
+            if (status.metadata) {
+                console.log('Received metadata');
+                console.log(status);
+            }
             console.log(`Received status: ${status.code} - ${status.details}`);
             console.log(status);
-});
-call.on('data', (message: TruckerLocationReply) => {
-    console.log('Received message');
+        });
+        call.on('data', (message: TruckerLocationReply) => {
+            console.log('Received message');
             console.log(message.toObject());
             setMessage1(JSON.stringify(message.toObject()));
         });
-        call.on('end', function() {
+        call.on('end', function () {
             // The server has finished sending
             console.log('Received end');
         });
-        call.on('error', function(e) {
+        call.on('error', function (e) {
             // An error has occurred and the stream has been closed.
             console.error(e);
         });
@@ -69,21 +77,24 @@ call.on('data', (message: TruckerLocationReply) => {
     };
 
     const getOrderManage = async (e: FormEvent) => {
-                    e.preventDefault();
-                    if (!rpcClient) {
-                        return;
-                    }
+        e.preventDefault();
+        if (!rpcClient) {
+            return;
+        }
 
-                    if (stream) {
-                        stream.cancel();
-                    }
+        if (stream) {
+            stream.cancel();
+        }
 
         try {
-            const res = await axios.get('https://spring2024be.sendy.ngrok.io/generate/token', {
-                params: {
-                    orderId: orderId
+            const res = await axios.get(
+                'https://spring2024be.sendy.ngrok.io/generate/token',
+                {
+                    params: {
+                        orderId: orderId,
+                    },
                 }
-            });
+            );
             if (res?.data) {
                 console.log(res);
                 setJwtToken(res.data);
@@ -100,11 +111,9 @@ call.on('data', (message: TruckerLocationReply) => {
         newRpcRequest.setOrderId(orderId);
         newRpcRequest.setManagerId(2);
 
-        const call = rpcClient.getTruckerLocations(
-            newRpcRequest, {
-                'Authorization': jwtToken
-            } as grpcWeb.Metadata
-        );
+        const call = rpcClient.getTruckerLocations(newRpcRequest, {
+            Authorization: jwtToken,
+        } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
             if (status.metadata) {
                 console.log('Received metadata');
@@ -118,15 +127,15 @@ call.on('data', (message: TruckerLocationReply) => {
             console.log(message.toObject());
             setMessage2(JSON.stringify(message.toObject()));
         });
-        call.on('end', function() {
+        call.on('end', function () {
             // The server has finished sending
             console.log('Received end');
         });
-        call.on('error', function(e) {
+        call.on('error', function (e) {
             // An error has occurred and the stream has been closed.
             console.error(e);
         });
-             setStream(call);
+        setStream(call);
     };
 
     const onCancleStream = () => {
@@ -137,7 +146,6 @@ call.on('data', (message: TruckerLocationReply) => {
             console.log('stream is not exist');
         }
     };
-
 
     useEffect(() => {
         const handleBeforeUnload = (event) => {
@@ -163,11 +171,17 @@ call.on('data', (message: TruckerLocationReply) => {
                 <button>Send Request</button>
             </form>
             <p className={'text-red-500'}>message: {message1}</p>
-            <br /><br /><br />
+            <br />
+            <br />
+            <br />
             <p>Hello, World! This is gRPC 운송 관리 Test Section.</p>
             <form className={'flex'} onSubmit={getOrderManage}>
                 <label>Order ID</label>
-                <input type="number" value={orderId} onChange={(e) => setOrderId(Number(e.target.value))} />
+                <input
+                    type="number"
+                    value={orderId}
+                    onChange={(e) => setOrderId(Number(e.target.value))}
+                />
                 <button>Send Request</button>
             </form>
             <p>jwt token: {jwtToken}</p>
