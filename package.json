@@ -1,50 +1,45 @@
 {
-    "name": "grpc-test-next",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "npm run protoc:compile && next start",
-        "protoc:compile": "protoc -I=. grpc/helloworld.proto --js_out=import_style=commonjs:. --grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:.",
-        "format": "prettier --write --cache .",
-        "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-        "prepare": "husky install"
-    },
-    "dependencies": {
-        "axios": "^1.6.7",
-        "google-protobuf": "^3.21.2",
-        "grpc": "^1.24.11",
-        "grpc-web": "^1.5.0",
-        "next": "13.5.6",
-        "protoc-gen-js": "^3.21.2",
-        "react": "^18",
-        "react-dom": "^18",
-        "web": "^0.0.2"
-    },
-    "devDependencies": {
-        "@types/node": "^20",
-        "@types/react": "^18",
-        "@types/react-dom": "^18",
-        "autoprefixer": "^10",
-        "eslint": "^8.57.0",
-        "eslint-config-next": "13.5.6",
-        "husky": "^9.0.11",
-        "lint-staged": "^15.2.2",
-        "postcss": "^8",
-        "prettier": "^3.2.5",
-        "tailwindcss": "^3",
-        "typescript": "^5"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "src/**/*.{js,jsx,ts,tsx,json,css,md}": [
-            "eslint --fix",
-            "prettier --write"
-        ]
-    }
+  "name": "grpc-test-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "npm run protoc:compile && next start",
+    "protoc:compile": "protoc -I=. grpc/helloworld.proto --js_out=import_style=commonjs:. --grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:.",
+    "format": "prettier --write --cache .",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "google-protobuf": "^3.21.2",
+    "grpc": "^1.24.11",
+    "grpc-web": "^1.5.0",
+    "next": "13.5.6",
+    "protoc-gen-js": "^3.21.2",
+    "react": "^18",
+    "react-dom": "^18",
+    "web": "^0.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "13.5.6",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "postcss": "^8",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3",
+    "typescript": "^5"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,md}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
 }
