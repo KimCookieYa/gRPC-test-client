@@ -149,13 +149,9 @@ export default function Home() {
 
     useEffect(() => {
         const handleBeforeUnload = (event) => {
-            // 여기에 실행하고 싶은 로직을 추가
             console.log('페이지를 떠나기 전에 실행할 함수');
-
-            // 이벤트에 preventDefault를 호출하고
-            // returnValue를 설정하여 사용자에게 경고 메시지를 표시할 수 있습니다.
             event.preventDefault();
-            // event.returnValue = '정말 페이지를 떠나시겠습니까?';
+            onCancleStream();
         };
 
         window.addEventListener('beforeunload', handleBeforeUnload);
