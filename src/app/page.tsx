@@ -17,6 +17,7 @@ export default function Home() {
     const [message2, setMessage2] = useState<string>();
     const [orderId, setOrderId] = useState<number>(0);
     const [jwtToken, setJwtToken] = useState<string>();
+    const [stream, setStream] = useState<grpcWeb.ClientReadableStream<TruckerLocationReply>>();
 
     useEffect(() => {
         if (!process.env.NEXT_PUBLIC_GRPC_URL) {
@@ -32,6 +33,10 @@ export default function Home() {
         e.preventDefault();
         if (!rpcClient) {
             return;
+        }
+
+        if (stream) {
+            stream.cancel();
         }
 
         const newRpcRequest = new TruckerLocationInAreaRequest();
@@ -60,12 +65,17 @@ export default function Home() {
             // An error has occurred and the stream has been closed.
             console.error(e);
         });
+        setStream(call);
     };
 
     const getOrderManage = async (e: FormEvent) => {
         e.preventDefault();
         if (!rpcClient) {
             return;
+        }
+
+        if (stream) {
+            stream.cancel();
         }
 
         try {
@@ -116,13 +126,40 @@ export default function Home() {
             // An error has occurred and the stream has been closed.
             console.error(e);
         });
+        setStream(call);
     };
+
+    const onCancleStream = () => {
+        if (stream) {
+            console.log('stream cancel');
+            stream.cancel();
+        } else {
+            console.log('stream is not exist');
+        }
+    };
+
+
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            // 여기에 실행하고 싶은 로직을 추가
+            console.log('페이지를 떠나기 전에 실행할 함수');
+
+            // 이벤트에 preventDefault를 호출하고
+            // returnValue를 설정하여 사용자에게 경고 메시지를 표시할 수 있습니다.
+            event.preventDefault();
+            // event.returnValue = '정말 페이지를 떠나시겠습니까?';
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
 
     return (
         <main className="flex flex-col gap-y-12 min-h-screen items-center justify-between p-24">
             <p>Hello, World! This is gRPC 드라이버 관리 Test Section.</p>
             <form className={'flex'} onSubmit={getDriverManage}>
-
                 <button>Send Request</button>
             </form>
             <p className={'text-red-500'}>message: {message1}</p>
@@ -135,6 +172,7 @@ export default function Home() {
             </form>
             <p>jwt token: {jwtToken}</p>
             <p className={'text-red-500'}>message: {message2}</p>
+            <button onClick={onCancleStream}>Cancle Stream</button>
         </main>
     );
 }
