@@ -39,16 +39,16 @@ export default function Home() {
             stream.cancel();
         }
 
-        const newRpcRequest = new TruckerLocationInAreaRequest();
-        newRpcRequest.setLeftTop(new Point().setLatitude(37.5).setLongitude(127.0));
-        newRpcRequest.setRightBottom(new Point().setLatitude(37.4).setLongitude(127.1));
+                    const newRpcRequest = new TruckerLocationInAreaRequest();
+                    newRpcRequest.setLeftTop(new Point().setLatitude(37.5).setLongitude(127.0));
+                    newRpcRequest.setRightBottom(new Point().setLatitude(37.4).setLongitude(127.1));
 
         const call = rpcClient.getTruckerLocationsInArea(newRpcRequest);
-        call.on('status', (status: grpcWeb.Status) => {
-            if (status.metadata) {
-                console.log('Received metadata');
-                console.log(status);
-            }
+call.on('status', (status: grpcWeb.Status) => {
+    if (status.metadata) {
+        console.log('Received metadata');
+        console.log(status);
+    }
             console.log(`Received status: ${status.code} - ${status.details}`);
             console.log(status);
         });
