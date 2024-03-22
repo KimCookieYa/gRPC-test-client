@@ -13,9 +13,7 @@ import axios from 'axios';
 
 export default function Home() {
     const [rpcClient, setRpcClient] = useState<TruckerLocationServiceClient>();
-    const [message1, setMessage1] = useState<string>();
     const [message1List, setMessage1List] = useState<string[]>([]);
-    const [message2, setMessage2] = useState<string>();
     const [message2List, setMessage2List] = useState<string[]>([]);
     const [orderId, setOrderId] = useState<number>(0);
     const [jwtToken1, setJwtToken1] = useState<string>();
@@ -89,7 +87,10 @@ export default function Home() {
         call.on('data', (message: TruckerLocationReply) => {
             console.log('Received message');
             console.log(message.toObject());
-            setMessage1(JSON.stringify(message.toObject()));
+            setMessage1List((prev) => [
+                ...prev,
+                JSON.stringify(message.toObject()),
+            ]);
         });
         call.on('end', function () {
             // The server has finished sending
@@ -151,7 +152,10 @@ export default function Home() {
         call.on('data', (message: TruckerLocationReply) => {
             console.log('Received message');
             console.log(message.toObject());
-            setMessage2(JSON.stringify(message.toObject()));
+            setMessage2List((prev) => [
+                ...prev,
+                JSON.stringify(message.toObject()),
+            ]);
         });
         call.on('end', function () {
             // The server has finished sending
