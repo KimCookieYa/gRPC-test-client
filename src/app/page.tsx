@@ -14,9 +14,12 @@ import axios from 'axios';
 export default function Home() {
     const [rpcClient, setRpcClient] = useState<TruckerLocationServiceClient>();
     const [message1, setMessage1] = useState<string>();
+    const [message1List, setMessage1List] = useState<string[]>([]);
     const [message2, setMessage2] = useState<string>();
+    const [message2List, setMessage2List] = useState<string[]>([]);
     const [orderId, setOrderId] = useState<number>(0);
-    const [jwtToken, setJwtToken] = useState<string>();
+    const [jwtToken1, setJwtToken1] = useState<string>();
+    const [jwtToken2, setJwtToken2] = useState<string>();
     const [stream, setStream] =
         useState<grpcWeb.ClientReadableStream<TruckerLocationReply>>();
 
@@ -50,7 +53,7 @@ export default function Home() {
             );
             if (res?.data) {
                 console.log(res);
-                setJwtToken(res.data);
+                setJwtToken1(res.data);
             } else {
                 throw new Error(
                     'Failed to get JWT token for driver monitoring'
@@ -58,7 +61,7 @@ export default function Home() {
             }
         } catch (e) {
             console.error(e);
-            setMessage1(JSON.stringify(e));
+            setMessage1List((prev) => [...prev, JSON.stringify(e)]);
             return;
         }
 
@@ -70,7 +73,9 @@ export default function Home() {
             new Point().setLatitude(37.4).setLongitude(127.1)
         );
 
-        const call = rpcClient.getTruckerLocationsInArea(newRpcRequest);
+        const call = rpcClient.getTruckerLocationsInArea(newRpcRequest, {
+            Authorization: jwtToken1,
+        } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
             if (status.metadata) {
                 console.log('Received metadata');
@@ -116,20 +121,20 @@ export default function Home() {
             );
             if (res?.data) {
                 console.log(res);
-                setJwtToken(res.data);
+                setJwtToken2(res.data);
             } else {
                 throw new Error('Failed to get JWT token for order monitoring');
             }
         } catch (e) {
             console.error(e);
-            setMessage2(JSON.stringify(e));
+            setMessage2List((prev) => [...prev, JSON.stringify(e)]);
             return;
         }
 
         const newRpcRequest = new TruckerLocationRequest();
 
         const call = rpcClient.getTruckerLocations(newRpcRequest, {
-            Authorization: jwtToken,
+            Authorization: jwtToken2,
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
             if (status.metadata) {
@@ -178,16 +183,29 @@ export default function Home() {
     }, []);
 
     return (
-        <main className="flex flex-col gap-y-12 min-h-screen items-center justify-between p-24">
-            <p>Hello, World! This is gRPC 드라이버 관리 Test Section.</p>
+        <main className="flex flex-col gap-y-4 min-h-screen items-center justify-between p-8 h-full bg-slate-300">
+            <h1 className={'text-2xl'}>드라이버관리</h1>
             <form className={'flex'} onSubmit={getDriverManage}>
-                <button>Send Request</button>
+                <button className={'p-2 border rounded-2xl bg-white'}>
+                    Send Request
+                </button>
             </form>
-            <p className={'text-red-500'}>message: {message1}</p>
+            <p className={'text-blue-500'}>jwt token: {jwtToken1}</p>
+            <div
+                className={
+                    'w-full h-[200px] overflow-y-scroll border-2 bg-slate-200'
+                }
+            >
+                {message1List.map((message, index) => (
+                    <p key={index} className={'text-red-500'}>
+                        message: {message}
+                    </p>
+                ))}
+            </div>
             <br />
+            <hr className={'w-full h-1 bg-black'} />
             <br />
-            <br />
-            <p>Hello, World! This is gRPC 운송 관리 Test Section.</p>
+            <h1 className={'text-2xl'}>운송관리</h1>
             <form className={'flex'} onSubmit={getOrderManage}>
                 <label>Order ID</label>
                 <input
@@ -195,10 +213,25 @@ export default function Home() {
                     value={orderId}
                     onChange={(e) => setOrderId(Number(e.target.value))}
                 />
-                <button>Send Request</button>
+                <button className={'p-2 border rounded-2xl bg-white'}>
+                    Send Request
+                </button>
             </form>
-            <p>jwt token: {jwtToken}</p>
-            <p className={'text-red-500'}>message: {message2}</p>
+            <p className={'text-blue-500'}>jwt token: {jwtToken2}</p>
+            <label>message2</label>
+            <div
+                className={
+                    'w-full h-[200px] flex flex-col overflow-y-scroll border-2 bg-slate-200'
+                }
+            >
+                {message2List.map((message, index) => (
+                    <p key={index} className={'text-red-500'}>
+                        {message}
+                    </p>
+                ))}
+            </div>
+            <br />
+            <br />
             <button onClick={onCancleStream}>Cancle Stream</button>
         </main>
     );
