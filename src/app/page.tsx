@@ -58,7 +58,7 @@ export default function Home() {
             }
         } catch (e) {
             console.error(e);
-            setMessage2(JSON.stringify(e));
+            setMessage1(JSON.stringify(e));
             return;
         }
 
