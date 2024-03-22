@@ -46,6 +46,7 @@ export default function Home() {
             stream.cancel();
         }
 
+        let tempJwtToken;
         try {
             const res = await axios.get(
                 process.env.NEXT_PUBLIC_JWT_TOKEN_URL +
@@ -53,6 +54,7 @@ export default function Home() {
             );
             if (res?.data) {
                 console.log(res);
+                tempJwtToken = res.data;
                 setJwtToken1(res.data);
             } else {
                 throw new Error(
@@ -74,7 +76,7 @@ export default function Home() {
         );
 
         const call = rpcClient.getTruckerLocationsInArea(newRpcRequest, {
-            Authorization: jwtToken1,
+            Authorization: tempJwtToken,
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
             if (status.metadata) {
@@ -110,6 +112,7 @@ export default function Home() {
             stream.cancel();
         }
 
+        let tempJwtToken;
         try {
             const res = await axios.get(
                 process.env.NEXT_PUBLIC_JWT_TOKEN_URL + '/generate/token',
@@ -121,6 +124,7 @@ export default function Home() {
             );
             if (res?.data) {
                 console.log(res);
+                tempJwtToken = res.data;
                 setJwtToken2(res.data);
             } else {
                 throw new Error('Failed to get JWT token for order monitoring');
@@ -134,7 +138,7 @@ export default function Home() {
         const newRpcRequest = new TruckerLocationRequest();
 
         const call = rpcClient.getTruckerLocations(newRpcRequest, {
-            Authorization: jwtToken2,
+            Authorization: tempJwtToken,
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
             if (status.metadata) {
