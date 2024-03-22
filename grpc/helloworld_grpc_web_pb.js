@@ -10,8 +10,11 @@
 // 	protoc              v4.25.3
 // source: grpc/helloworld.proto
 
+
 /* eslint-disable */
 // @ts-nocheck
+
+
 
 const grpc = {};
 grpc.web = require('grpc-web');
@@ -30,24 +33,23 @@ proto.ai.sendy.grpc.truckerlocation = require('./helloworld_pb.js');
  * @struct
  * @final
  */
-proto.ai.sendy.grpc.truckerlocation.TruckerLocationServiceClient = function (
-    hostname,
-    credentials,
-    options
-) {
-    if (!options) options = {};
-    options.format = 'text';
+proto.ai.sendy.grpc.truckerlocation.TruckerLocationServiceClient =
+    function(hostname, credentials, options) {
+  if (!options) options = {};
+  options.format = 'text';
 
-    /**
-     * @private @const {!grpc.web.GrpcWebClientBase} The client
-     */
-    this.client_ = new grpc.web.GrpcWebClientBase(options);
+  /**
+   * @private @const {!grpc.web.GrpcWebClientBase} The client
+   */
+  this.client_ = new grpc.web.GrpcWebClientBase(options);
 
-    /**
-     * @private @const {string} The hostname
-     */
-    this.hostname_ = hostname.replace(/\/+$/, '');
+  /**
+   * @private @const {string} The hostname
+   */
+  this.hostname_ = hostname.replace(/\/+$/, '');
+
 };
+
 
 /**
  * @param {string} hostname
@@ -58,20 +60,22 @@ proto.ai.sendy.grpc.truckerlocation.TruckerLocationServiceClient = function (
  * @final
  */
 proto.ai.sendy.grpc.truckerlocation.TruckerLocationServicePromiseClient =
-    function (hostname, credentials, options) {
-        if (!options) options = {};
-        options.format = 'text';
+    function(hostname, credentials, options) {
+  if (!options) options = {};
+  options.format = 'text';
 
-        /**
-         * @private @const {!grpc.web.GrpcWebClientBase} The client
-         */
-        this.client_ = new grpc.web.GrpcWebClientBase(options);
+  /**
+   * @private @const {!grpc.web.GrpcWebClientBase} The client
+   */
+  this.client_ = new grpc.web.GrpcWebClientBase(options);
 
-        /**
-         * @private @const {string} The hostname
-         */
-        this.hostname_ = hostname.replace(/\/+$/, '');
-    };
+  /**
+   * @private @const {string} The hostname
+   */
+  this.hostname_ = hostname.replace(/\/+$/, '');
+
+};
+
 
 /**
  * @const
@@ -79,21 +83,21 @@ proto.ai.sendy.grpc.truckerlocation.TruckerLocationServicePromiseClient =
  *   !proto.ai.sendy.grpc.truckerlocation.TruckerLocationRequest,
  *   !proto.ai.sendy.grpc.truckerlocation.TruckerLocationReply>}
  */
-const methodDescriptor_TruckerLocationService_GetTruckerLocations =
-    new grpc.web.MethodDescriptor(
-        '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocations',
-        grpc.web.MethodType.SERVER_STREAMING,
-        proto.ai.sendy.grpc.truckerlocation.TruckerLocationRequest,
-        proto.ai.sendy.grpc.truckerlocation.TruckerLocationReply,
-        /**
-         * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationRequest} request
-         * @return {!Uint8Array}
-         */
-        function (request) {
-            return request.serializeBinary();
-        },
-        proto.ai.sendy.grpc.truckerlocation.TruckerLocationReply.deserializeBinary
-    );
+const methodDescriptor_TruckerLocationService_GetTruckerLocations = new grpc.web.MethodDescriptor(
+  '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocations',
+  grpc.web.MethodType.SERVER_STREAMING,
+  proto.ai.sendy.grpc.truckerlocation.TruckerLocationRequest,
+  proto.ai.sendy.grpc.truckerlocation.TruckerLocationReply,
+  /**
+   * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.ai.sendy.grpc.truckerlocation.TruckerLocationReply.deserializeBinary
+);
+
 
 /**
  * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationRequest} request The request proto
@@ -103,15 +107,14 @@ const methodDescriptor_TruckerLocationService_GetTruckerLocations =
  *     The XHR Node Readable Stream
  */
 proto.ai.sendy.grpc.truckerlocation.TruckerLocationServiceClient.prototype.getTruckerLocations =
-    function (request, metadata) {
-        return this.client_.serverStreaming(
-            this.hostname_ +
-                '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocations',
-            request,
-            metadata || {},
-            methodDescriptor_TruckerLocationService_GetTruckerLocations
-        );
-    };
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocations',
+      request,
+      metadata || {},
+      methodDescriptor_TruckerLocationService_GetTruckerLocations);
+};
+
 
 /**
  * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationRequest} request The request proto
@@ -121,15 +124,14 @@ proto.ai.sendy.grpc.truckerlocation.TruckerLocationServiceClient.prototype.getTr
  *     The XHR Node Readable Stream
  */
 proto.ai.sendy.grpc.truckerlocation.TruckerLocationServicePromiseClient.prototype.getTruckerLocations =
-    function (request, metadata) {
-        return this.client_.serverStreaming(
-            this.hostname_ +
-                '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocations',
-            request,
-            metadata || {},
-            methodDescriptor_TruckerLocationService_GetTruckerLocations
-        );
-    };
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocations',
+      request,
+      metadata || {},
+      methodDescriptor_TruckerLocationService_GetTruckerLocations);
+};
+
 
 /**
  * @const
@@ -137,21 +139,21 @@ proto.ai.sendy.grpc.truckerlocation.TruckerLocationServicePromiseClient.prototyp
  *   !proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest,
  *   !proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply>}
  */
-const methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea =
-    new grpc.web.MethodDescriptor(
-        '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocationsInArea',
-        grpc.web.MethodType.SERVER_STREAMING,
-        proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest,
-        proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply,
-        /**
-         * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest} request
-         * @return {!Uint8Array}
-         */
-        function (request) {
-            return request.serializeBinary();
-        },
-        proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply.deserializeBinary
-    );
+const methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea = new grpc.web.MethodDescriptor(
+  '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocationsInArea',
+  grpc.web.MethodType.SERVER_STREAMING,
+  proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest,
+  proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply,
+  /**
+   * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaReply.deserializeBinary
+);
+
 
 /**
  * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest} request The request proto
@@ -161,15 +163,14 @@ const methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea =
  *     The XHR Node Readable Stream
  */
 proto.ai.sendy.grpc.truckerlocation.TruckerLocationServiceClient.prototype.getTruckerLocationsInArea =
-    function (request, metadata) {
-        return this.client_.serverStreaming(
-            this.hostname_ +
-                '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocationsInArea',
-            request,
-            metadata || {},
-            methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea
-        );
-    };
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocationsInArea',
+      request,
+      metadata || {},
+      methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea);
+};
+
 
 /**
  * @param {!proto.ai.sendy.grpc.truckerlocation.TruckerLocationInAreaRequest} request The request proto
@@ -179,14 +180,14 @@ proto.ai.sendy.grpc.truckerlocation.TruckerLocationServiceClient.prototype.getTr
  *     The XHR Node Readable Stream
  */
 proto.ai.sendy.grpc.truckerlocation.TruckerLocationServicePromiseClient.prototype.getTruckerLocationsInArea =
-    function (request, metadata) {
-        return this.client_.serverStreaming(
-            this.hostname_ +
-                '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocationsInArea',
-            request,
-            metadata || {},
-            methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea
-        );
-    };
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/ai.sendy.grpc.truckerlocation.TruckerLocationService/GetTruckerLocationsInArea',
+      request,
+      metadata || {},
+      methodDescriptor_TruckerLocationService_GetTruckerLocationsInArea);
+};
+
 
 module.exports = proto.ai.sendy.grpc.truckerlocation;
+

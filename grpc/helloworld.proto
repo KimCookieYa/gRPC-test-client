@@ -11,10 +11,7 @@ service TruckerLocationService {
   rpc GetTruckerLocationsInArea (TruckerLocationInAreaRequest) returns (stream TruckerLocationInAreaReply);
 }
 
-message TruckerLocationRequest {
-  int64 order_id = 1;
-  int64 manager_id = 2;
-}
+message TruckerLocationRequest {}
 
 message TruckerLocationReply {
   int64 trucker_id = 1;

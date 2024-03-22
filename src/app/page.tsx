@@ -43,6 +43,25 @@ export default function Home() {
             stream.cancel();
         }
 
+        try {
+            const res = await axios.get(
+                process.env.NEXT_PUBLIC_JWT_TOKEN_URL +
+                    '/generate/area-monitoring-token'
+            );
+            if (res?.data) {
+                console.log(res);
+                setJwtToken(res.data);
+            } else {
+                throw new Error(
+                    'Failed to get JWT token for driver monitoring'
+                );
+            }
+        } catch (e) {
+            console.error(e);
+            setMessage2(JSON.stringify(e));
+            return;
+        }
+
         const newRpcRequest = new TruckerLocationInAreaRequest();
         newRpcRequest.setLeftTop(
             new Point().setLatitude(37.5).setLongitude(127.0)
@@ -88,7 +107,7 @@ export default function Home() {
 
         try {
             const res = await axios.get(
-                'https://spring2024be.sendy.ngrok.io/generate/token',
+                process.env.NEXT_PUBLIC_JWT_TOKEN_URL + '/generate/token',
                 {
                     params: {
                         orderId: orderId,
@@ -99,7 +118,7 @@ export default function Home() {
                 console.log(res);
                 setJwtToken(res.data);
             } else {
-                throw new Error('Failed to get JWT token');
+                throw new Error('Failed to get JWT token for order monitoring');
             }
         } catch (e) {
             console.error(e);
@@ -108,8 +127,6 @@ export default function Home() {
         }
 
         const newRpcRequest = new TruckerLocationRequest();
-        newRpcRequest.setOrderId(orderId);
-        newRpcRequest.setManagerId(2);
 
         const call = rpcClient.getTruckerLocations(newRpcRequest, {
             Authorization: jwtToken,
@@ -148,7 +165,7 @@ export default function Home() {
     };
 
     useEffect(() => {
-        const handleBeforeUnload = (event) => {
+        const handleBeforeUnload = (event: Event) => {
             console.log('페이지를 떠나기 전에 실행할 함수');
             event.preventDefault();
             onCancleStream();
