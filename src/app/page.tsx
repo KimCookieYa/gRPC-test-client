@@ -15,11 +15,12 @@ export default function Home() {
     const [rpcClient, setRpcClient] = useState<TruckerLocationServiceClient>();
     const [message1List, setMessage1List] = useState<string[]>([]);
     const [message2List, setMessage2List] = useState<string[]>([]);
-    const [orderId, setOrderId] = useState<number>(0);
+    const [orderId, setOrderId] = useState<number>(576668);
     const [jwtToken1, setJwtToken1] = useState<string>();
     const [jwtToken2, setJwtToken2] = useState<string>();
     const [stream, setStream] =
         useState<grpcWeb.ClientReadableStream<TruckerLocationReply>>();
+    const [toggle, setToggle] = useState<boolean>(false);
 
     useEffect(() => {
         if (!process.env.NEXT_PUBLIC_GRPC_URL) {
@@ -39,7 +40,7 @@ export default function Home() {
         if (!rpcClient) {
             return;
         }
-
+        console.log('드라이버 관리 요청');
         if (stream) {
             stream.cancel();
         }
@@ -51,7 +52,6 @@ export default function Home() {
                     '/generate/area-monitoring-token'
             );
             if (res?.data) {
-                console.log(res);
                 tempJwtToken = res.data;
                 setJwtToken1(res.data);
             } else {
@@ -74,7 +74,7 @@ export default function Home() {
         );
 
         const call = rpcClient.getTruckerLocationsInArea(newRpcRequest, {
-            Authorization: tempJwtToken,
+            Authorization: toggle ? tempJwtToken : undefined,
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
             if (status.metadata) {
@@ -108,7 +108,7 @@ export default function Home() {
         if (!rpcClient) {
             return;
         }
-
+        console.log('운송 관리 요청');
         if (stream) {
             stream.cancel();
         }
@@ -124,7 +124,6 @@ export default function Home() {
                 }
             );
             if (res?.data) {
-                console.log(res);
                 tempJwtToken = res.data;
                 setJwtToken2(res.data);
             } else {
@@ -139,7 +138,7 @@ export default function Home() {
         const newRpcRequest = new TruckerLocationRequest();
 
         const call = rpcClient.getTruckerLocations(newRpcRequest, {
-            Authorization: tempJwtToken,
+            Authorization: toggle ? tempJwtToken : undefined,
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
             if (status.metadata) {
@@ -198,7 +197,7 @@ export default function Home() {
                     Send Request
                 </button>
             </form>
-            <p className={'text-blue-500'}>jwt token: {jwtToken1}</p>
+            <p className={'text-blue-500 w-full'}>jwt token: {jwtToken1}</p>
             <div
                 className={
                     'w-full h-[200px] overflow-y-scroll border-2 bg-slate-200'
@@ -214,6 +213,13 @@ export default function Home() {
             <hr className={'w-full h-1 bg-black'} />
             <br />
             <h1 className={'text-2xl'}>운송관리</h1>
+            <button
+                onClick={() => setToggle((prev) => !prev)}
+                className={'p-2 border-1 bg-amber-200 rounded-3xl'}
+            >
+                jwt 넣기: {toggle ? 'True' : 'False'}
+            </button>
+
             <form className={'flex'} onSubmit={getOrderManage}>
                 <label>Order ID</label>
                 <input
@@ -225,8 +231,9 @@ export default function Home() {
                     Send Request
                 </button>
             </form>
-            <p className={'text-blue-500'}>jwt token: {jwtToken2}</p>
-            <label>message2</label>
+            <p className={'text-blue-500 w-full flex text-wrap'}>
+                jwt token: {jwtToken2}
+            </p>
             <div
                 className={
                     'w-full h-[200px] flex flex-col overflow-y-scroll border-2 bg-slate-200'
