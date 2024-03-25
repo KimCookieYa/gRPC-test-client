@@ -76,11 +76,11 @@ export default function Home() {
         const call = rpcClient.getTruckerLocationsInArea(newRpcRequest, {
             Authorization: toggle ? tempJwtToken : undefined,
         } as grpcWeb.Metadata);
+        call.on('metadata', (metadata) => {
+            console.log('Received metadata');
+            console.log(metadata);
+        });
         call.on('status', (status: grpcWeb.Status) => {
-            if (status.metadata) {
-                console.log('Received metadata');
-                console.log(status);
-            }
             console.log(`Received status: ${status.code} - ${status.details}`);
             console.log(status);
         });
@@ -141,10 +141,6 @@ export default function Home() {
             Authorization: toggle ? tempJwtToken : undefined,
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
-            if (status.metadata) {
-                console.log('Received metadata');
-                console.log(status);
-            }
             console.log(`Received status: ${status.code} - ${status.details}`);
             console.log(status);
         });
@@ -163,6 +159,10 @@ export default function Home() {
         call.on('error', function (e) {
             // An error has occurred and the stream has been closed.
             console.error(e);
+        });
+        call.on('metadata', (metadata: grpcWeb.Metadata) => {
+            console.log('Received metadata');
+            console.log(metadata);
         });
         setStream(call);
     };
