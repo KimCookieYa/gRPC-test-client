@@ -142,6 +142,7 @@ export default function Home() {
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
             console.log(`Received status: ${status.code} - ${status.details}`);
+            console.log(status.metadata);
             console.log(status);
         });
         call.on('data', (message: TruckerLocationReply) => {
