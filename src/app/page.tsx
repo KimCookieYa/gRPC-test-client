@@ -20,7 +20,7 @@ export default function Home() {
     const [jwtToken2, setJwtToken2] = useState<string>();
     const [stream, setStream] =
         useState<grpcWeb.ClientReadableStream<TruckerLocationReply>>();
-    const [toggle, setToggle] = useState<boolean>(false);
+    const [toggle, setToggle] = useState<boolean>(true);
 
     useEffect(() => {
         if (!process.env.NEXT_PUBLIC_GRPC_URL) {
@@ -33,6 +33,8 @@ export default function Home() {
             null
         );
         setRpcClient(newRpcClient);
+        console.log(newRpcClient);
+        getOrderManage(newRpcClient, '0');
     }, []);
 
     const getDriverManage = async (e: FormEvent) => {
@@ -41,9 +43,7 @@ export default function Home() {
             return;
         }
         console.log('드라이버 관리 요청');
-        if (stream) {
-            stream.cancel();
-        }
+        onCancleStream();
 
         let tempJwtToken;
         try {
@@ -77,11 +77,12 @@ export default function Home() {
             Authorization: toggle ? tempJwtToken : undefined,
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
-            console.log(`Received status: ${status.code} - ${status.details}`);
-            console.log(status);
+            console.log(
+                `[Stream] Received status: ${status.code} - ${status.details}`
+            );
         });
         call.on('data', (message: TruckerLocationReply) => {
-            console.log('Received message');
+            console.log('[Stream] Received message');
             console.log(message.toObject());
             setMessage1List((prev) => [
                 ...prev,
@@ -90,24 +91,32 @@ export default function Home() {
         });
         call.on('end', function () {
             // The server has finished sending
-            console.log('Received end');
+            console.log('[Stream] Received end');
         });
-        // call.on('error', function (e) {
-        //     // An error has occurred and the stream has been closed.
-        //     console.error(e);
-        // });
+        call.on('error', function (e) {
+            // An error has occurred and the stream has been closed.
+            console.error(e);
+        });
         setStream(call);
     };
 
-    const getOrderManage = async (e: FormEvent) => {
+    const [orderTimer, setOrderTimer] = useState<number>(0);
+    const [orderTimeout, setOrderTimeout] = useState<NodeJS.Timeout>();
+
+    const onOrderManage = async (e: FormEvent) => {
         e.preventDefault();
-        if (!rpcClient) {
+        await getOrderManage(rpcClient, '0');
+    };
+
+    const getOrderManage = async (
+        client: TruckerLocationServiceClient | undefined,
+        reconnection: string
+    ) => {
+        if (!client) {
             return;
         }
         console.log('운송 관리 요청');
-        if (stream) {
-            stream.cancel();
-        }
+        onCancleStream();
 
         let tempJwtToken;
         try {
@@ -133,39 +142,59 @@ export default function Home() {
 
         const newRpcRequest = new TruckerLocationRequest();
 
-        const call = rpcClient.getTruckerLocations(newRpcRequest, {
+        const call = client.getTruckerLocations(newRpcRequest, {
             'Authorization': toggle ? tempJwtToken : undefined,
-            'custom-header-reconnection': 'false',
+            'custom-header-reconnection': reconnection,
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
-            console.log(`Received status: ${status.code} - ${status.details}`);
-            console.log(status);
+            console.log(
+                `[Stream] Received status: ${status.code} - ${status.details}`
+            );
+            if (status.code === 4) {
+                console.log('reconnect');
+                getOrderManage(rpcClient, '1');
+            }
         });
         call.on('data', (message: TruckerLocationReply) => {
-            console.log('Received message');
-            console.log(message.toObject());
+            console.log('[Stream] Received message');
+            console.log(message);
             setMessage2List((prev) => [
                 ...prev,
                 JSON.stringify(message.toObject()),
             ]);
+            setOrderTimer(0);
         });
         call.on('end', function () {
             // The server has finished sending
-            console.log('Received end');
+            console.log('[Stream] Received end');
         });
-        // call.on('error', function (e) {
-        //     // An error has occurred and the stream has been closed.
-        //     console.error(e);
-        // });
+        call.on('error', function (e) {
+            // An error has occurred and the stream has been closed.
+            console.error(e);
+        });
         setStream(call);
+        if (orderTimeout) {
+            clearInterval(orderTimeout);
+            setOrderTimeout(undefined);
+        }
+        const timer = setInterval(() => {
+            setOrderTimer((prev) => prev + 1);
+        }, 1000);
+        setOrderTimeout(timer);
     };
 
     const onCancleStream = () => {
         if (stream) {
             console.log('stream cancel');
             stream.cancel();
+            setStream(undefined);
         } else {
             console.log('stream is not exist');
+        }
+        setOrderTimer(0);
+        if (orderTimeout) {
+            clearInterval(orderTimeout);
+            setOrderTimeout(undefined);
         }
     };
 
@@ -182,62 +211,77 @@ export default function Home() {
         };
     }, []);
 
+    // 운송관리에서 데이터를 5초 이상 받지 못하면, 재연결 요청
+    useEffect(
+        function reconnectOrderManage() {
+            console.log(orderTimer);
+            if (stream && orderTimer > 7) {
+                console.log('reconnect order manage');
+                onCancleStream();
+                getOrderManage(rpcClient, '1');
+            }
+        },
+        [orderTimer]
+    );
+
     return (
         <main className="flex flex-col gap-y-4 min-h-screen items-center justify-between p-8 h-full bg-slate-300">
-            <h1 className={'text-2xl'}>드라이버관리</h1>
-            <form className={'flex'} onSubmit={getDriverManage}>
-                <button className={'p-2 border rounded-2xl bg-white'}>
-                    Send Request
+            <section className={'w-full'}>
+                <h1 className={'text-2xl'}>드라이버관리</h1>
+                <form className={'flex'} onSubmit={getDriverManage}>
+                    <button className={'p-2 border rounded-2xl bg-white'}>
+                        Send Request
+                    </button>
+                </form>
+                <p className={'text-blue-500 w-full'}>jwt token: {jwtToken1}</p>
+                <div
+                    className={
+                        'w-full h-[200px] overflow-y-scroll border-2 bg-slate-200'
+                    }
+                >
+                    {message1List.map((message, index) => (
+                        <p key={index} className={'text-red-500'}>
+                            message: {message}
+                        </p>
+                    ))}
+                </div>
+            </section>
+            <hr className={'w-full h-1 bg-black my-10'} />
+            <section className={'w-full'}>
+                <h1 className={'text-2xl'}>운송관리</h1>
+                <button
+                    onClick={() => setToggle((prev) => !prev)}
+                    className={'p-2 border-1 bg-amber-200 rounded-3xl'}
+                >
+                    jwt 넣기: {toggle ? 'True' : 'False'}
                 </button>
-            </form>
-            <p className={'text-blue-500 w-full'}>jwt token: {jwtToken1}</p>
-            <div
-                className={
-                    'w-full h-[200px] overflow-y-scroll border-2 bg-slate-200'
-                }
-            >
-                {message1List.map((message, index) => (
-                    <p key={index} className={'text-red-500'}>
-                        message: {message}
-                    </p>
-                ))}
-            </div>
-            <br />
-            <hr className={'w-full h-1 bg-black'} />
-            <br />
-            <h1 className={'text-2xl'}>운송관리</h1>
-            <button
-                onClick={() => setToggle((prev) => !prev)}
-                className={'p-2 border-1 bg-amber-200 rounded-3xl'}
-            >
-                jwt 넣기: {toggle ? 'True' : 'False'}
-            </button>
 
-            <form className={'flex'} onSubmit={getOrderManage}>
-                <label>Order ID</label>
-                <input
-                    type="number"
-                    value={orderId}
-                    onChange={(e) => setOrderId(Number(e.target.value))}
-                />
-                <button className={'p-2 border rounded-2xl bg-white'}>
-                    Send Request
-                </button>
-            </form>
-            <p className={'text-blue-500 w-full flex text-wrap'}>
-                jwt token: {jwtToken2}
-            </p>
-            <div
-                className={
-                    'w-full h-[200px] flex flex-col overflow-y-scroll border-2 bg-slate-200'
-                }
-            >
-                {message2List.map((message, index) => (
-                    <p key={index} className={'text-red-500'}>
-                        {message}
-                    </p>
-                ))}
-            </div>
+                <form className={'flex'} onSubmit={onOrderManage}>
+                    <label>Order ID</label>
+                    <input
+                        type="number"
+                        value={orderId}
+                        onChange={(e) => setOrderId(Number(e.target.value))}
+                    />
+                    <button className={'p-2 border rounded-2xl bg-white'}>
+                        Send Request
+                    </button>
+                </form>
+                <p className={'text-blue-500 w-full flex text-wrap'}>
+                    jwt token: {jwtToken2}
+                </p>
+                <div
+                    className={
+                        'w-full h-[200px] flex flex-col overflow-y-scroll border-2 bg-slate-200'
+                    }
+                >
+                    {message2List.map((message, index) => (
+                        <p key={index} className={'text-red-500'}>
+                            {message}
+                        </p>
+                    ))}
+                </div>
+            </section>
             <br />
             <br />
             <button onClick={onCancleStream}>Cancle Stream</button>
