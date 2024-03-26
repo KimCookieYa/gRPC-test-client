@@ -76,10 +76,6 @@ export default function Home() {
         const call = rpcClient.getTruckerLocationsInArea(newRpcRequest, {
             Authorization: toggle ? tempJwtToken : undefined,
         } as grpcWeb.Metadata);
-        call.on('metadata', (metadata) => {
-            console.log('Received metadata');
-            console.log(metadata);
-        });
         call.on('status', (status: grpcWeb.Status) => {
             console.log(`Received status: ${status.code} - ${status.details}`);
             console.log(status);
@@ -96,10 +92,10 @@ export default function Home() {
             // The server has finished sending
             console.log('Received end');
         });
-        call.on('error', function (e) {
-            // An error has occurred and the stream has been closed.
-            console.error(e);
-        });
+        // call.on('error', function (e) {
+        //     // An error has occurred and the stream has been closed.
+        //     console.error(e);
+        // });
         setStream(call);
     };
 
@@ -138,11 +134,11 @@ export default function Home() {
         const newRpcRequest = new TruckerLocationRequest();
 
         const call = rpcClient.getTruckerLocations(newRpcRequest, {
-            Authorization: toggle ? tempJwtToken : undefined,
+            'Authorization': toggle ? tempJwtToken : undefined,
+            'custom-header-reconnection': 'false',
         } as grpcWeb.Metadata);
         call.on('status', (status: grpcWeb.Status) => {
             console.log(`Received status: ${status.code} - ${status.details}`);
-            console.log(status.metadata);
             console.log(status);
         });
         call.on('data', (message: TruckerLocationReply) => {
@@ -157,14 +153,10 @@ export default function Home() {
             // The server has finished sending
             console.log('Received end');
         });
-        call.on('error', function (e) {
-            // An error has occurred and the stream has been closed.
-            console.error(e);
-        });
-        call.on('metadata', (metadata: grpcWeb.Metadata) => {
-            console.log('Received metadata');
-            console.log(metadata);
-        });
+        // call.on('error', function (e) {
+        //     // An error has occurred and the stream has been closed.
+        //     console.error(e);
+        // });
         setStream(call);
     };
 
