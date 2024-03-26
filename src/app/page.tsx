@@ -12,7 +12,6 @@ import {
 import axios from 'axios';
 
 export default function Home() {
-    const [rpcClient, setRpcClient] = useState<TruckerLocationServiceClient>();
     const [message1List, setMessage1List] = useState<string[]>([]);
     const [message2List, setMessage2List] = useState<string[]>([]);
     const [orderId, setOrderId] = useState<number>(576668);
@@ -22,7 +21,7 @@ export default function Home() {
         useState<grpcWeb.ClientReadableStream<TruckerLocationReply>>();
     const [toggle, setToggle] = useState<boolean>(true);
 
-    useEffect(() => {
+    const getRpcClient = async () => {
         if (!process.env.NEXT_PUBLIC_GRPC_URL) {
             console.error('NEXT_PUBLIC_GRPC_URL is not defined');
             return;
@@ -32,13 +31,14 @@ export default function Home() {
             null,
             null
         );
-        setRpcClient(newRpcClient);
-        console.log(newRpcClient);
-        getOrderManage(newRpcClient, '0');
-    }, []);
+        // console.log('get rpc client');
+        // console.log(newRpcClient);
+        return newRpcClient;
+    };
 
     const getDriverManage = async (e: FormEvent) => {
         e.preventDefault();
+        const rpcClient = await getRpcClient();
         if (!rpcClient) {
             return;
         }
@@ -100,19 +100,14 @@ export default function Home() {
         setStream(call);
     };
 
-    const [orderTimer, setOrderTimer] = useState<number>(0);
-    const [orderTimeout, setOrderTimeout] = useState<NodeJS.Timeout>();
-
     const onOrderManage = async (e: FormEvent) => {
         e.preventDefault();
-        await getOrderManage(rpcClient, '0');
+        await getOrderManage('0');
     };
 
-    const getOrderManage = async (
-        client: TruckerLocationServiceClient | undefined,
-        reconnection: string
-    ) => {
-        if (!client) {
+    const getOrderManage = async (reconnection: string) => {
+        const rpcClient = await getRpcClient();
+        if (!rpcClient) {
             return;
         }
         console.log('운송 관리 요청');
@@ -142,7 +137,7 @@ export default function Home() {
 
         const newRpcRequest = new TruckerLocationRequest();
 
-        const call = client.getTruckerLocations(newRpcRequest, {
+        const call = rpcClient.getTruckerLocations(newRpcRequest, {
             'Authorization': toggle ? tempJwtToken : undefined,
             'custom-header-reconnection': reconnection,
         } as grpcWeb.Metadata);
@@ -152,7 +147,7 @@ export default function Home() {
             );
             if (status.code === 4) {
                 console.log('reconnect');
-                getOrderManage(rpcClient, '1');
+                getOrderManage('1');
             }
         });
         call.on('data', (message: TruckerLocationReply) => {
@@ -162,43 +157,37 @@ export default function Home() {
                 ...prev,
                 JSON.stringify(message.toObject()),
             ]);
-            setOrderTimer(0);
         });
         call.on('end', function () {
             // The server has finished sending
             console.log('[Stream] Received end');
+            getOrderManage('1');
         });
         call.on('error', function (e) {
             // An error has occurred and the stream has been closed.
             console.error(e);
+            if (e.code !== 504) {
+                setStream(undefined);
+            } else {
+                getOrderManage('1');
+            }
         });
         setStream(call);
-        if (orderTimeout) {
-            clearInterval(orderTimeout);
-            setOrderTimeout(undefined);
-        }
-        const timer = setInterval(() => {
-            setOrderTimer((prev) => prev + 1);
-        }, 1000);
-        setOrderTimeout(timer);
     };
 
     const onCancleStream = () => {
         if (stream) {
-            console.log('stream cancel');
+            console.log('[Stream] Cancle');
             stream.cancel();
             setStream(undefined);
         } else {
-            console.log('stream is not exist');
-        }
-        setOrderTimer(0);
-        if (orderTimeout) {
-            clearInterval(orderTimeout);
-            setOrderTimeout(undefined);
+            console.log('[Stream] Not Exist');
         }
     };
 
     useEffect(() => {
+        getOrderManage('0');
+
         const handleBeforeUnload = (event: Event) => {
             console.log('페이지를 떠나기 전에 실행할 함수');
             event.preventDefault();
@@ -210,19 +199,6 @@ export default function Home() {
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
     }, []);
-
-    // 운송관리에서 데이터를 5초 이상 받지 못하면, 재연결 요청
-    useEffect(
-        function reconnectOrderManage() {
-            console.log(orderTimer);
-            if (stream && orderTimer > 7) {
-                console.log('reconnect order manage');
-                onCancleStream();
-                getOrderManage(rpcClient, '1');
-            }
-        },
-        [orderTimer]
-    );
 
     return (
         <main className="flex flex-col gap-y-4 min-h-screen items-center justify-between p-8 h-full bg-slate-300">
