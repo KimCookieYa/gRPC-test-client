@@ -1,4 +1,4 @@
-FROM node:18-alpine as base
+FROM node:20-alpine3.17 as base
 
 WORKDIR ./grpc-app
 RUN apk add --no-cache curl

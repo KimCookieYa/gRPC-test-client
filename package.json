@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
-        "start": "npm run protoc:compile && next start",
+        "start": "next start",
         "protoc:compile": "protoc -I=. grpc/helloworld.proto --js_out=import_style=commonjs:. --grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:.",
         "format": "prettier --write --cache .",
         "prepare": "husky"
@@ -13,7 +13,6 @@
     "dependencies": {
         "axios": "^1.6.7",
         "google-protobuf": "^3.21.2",
-        "grpc": "^1.24.11",
         "grpc-web": "^1.5.0",
         "next": "13.5.6",
         "protoc-gen-js": "^3.21.2",
