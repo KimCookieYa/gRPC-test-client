@@ -7,7 +7,7 @@ FROM base AS grpc
 COPY package*.json /grpc-app/
 RUN npm ci
 COPY . /grpc-app
-COPY .env.local env.local
+COPY .env.prod .env
 RUN echo "grpc"
 RUN npm run build
 EXPOSE 3000
