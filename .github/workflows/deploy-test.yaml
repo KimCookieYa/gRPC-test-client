@@ -82,7 +82,7 @@ jobs:
         with:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          target: production
+          target: main
           build-args: |
             API_KEY=${{ env.API_KEY }}
           cache-from: type=gha
