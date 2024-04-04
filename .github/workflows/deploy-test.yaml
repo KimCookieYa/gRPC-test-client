@@ -82,7 +82,7 @@ jobs:
         with:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          target: main
+          target: grpc
           build-args: |
             API_KEY=${{ env.API_KEY }}
           cache-from: type=gha
